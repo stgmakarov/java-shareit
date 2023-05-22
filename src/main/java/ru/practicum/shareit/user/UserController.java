@@ -9,9 +9,6 @@ import ru.practicum.shareit.user.storage.UserStorage;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {

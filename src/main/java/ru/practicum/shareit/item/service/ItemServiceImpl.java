@@ -18,9 +18,9 @@ import java.util.List;
 @Slf4j
 public class ItemServiceImpl implements ItemService {
     @Autowired
-    ItemStorage itemStorage;
+    private ItemStorage itemStorage;
     @Autowired
-    UserStorage userStorage;
+    private UserStorage userStorage;
 
     @Override
     public Item create(Item item, long userId) {
