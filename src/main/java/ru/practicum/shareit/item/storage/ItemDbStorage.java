@@ -32,8 +32,8 @@ public class ItemDbStorage implements ItemStorage {
     @Override
     public Item getById(long itemId) {
         Item item = itemRepository.findById(itemId).orElse(null);
-        if (item == null) ShareitLogger.
-                returnErrorMsg(HttpStatus.NOT_FOUND, String.format("Вещь с ИД %d не найдена", itemId));
+        if (item == null)
+            ShareitLogger.returnErrorMsg(HttpStatus.NOT_FOUND, String.format("Вещь с ИД %d не найдена", itemId));
         return item;
     }
 
