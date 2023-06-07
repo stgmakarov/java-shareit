@@ -26,5 +26,5 @@ public interface ItemService {
 
     List<Comment> getItemComment(long itemId);
 
-    Comment addComment(long ItemId, long userId, String text);
+    Comment addComment(long itemId, long userId, String text);
 }
