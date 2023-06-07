@@ -3,8 +3,8 @@ package ru.practicum.shareit.user.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.logger.ShareitLogger;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.utilites.ShareitLogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;

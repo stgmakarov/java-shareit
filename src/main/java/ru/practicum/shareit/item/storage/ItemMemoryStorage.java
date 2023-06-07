@@ -56,4 +56,9 @@ public class ItemMemoryStorage implements ItemStorage {
         if (text.isBlank()) return new ArrayList<>();
         return itemMap.values().stream().filter(item -> (item.getAvailable()) && (item.getName().toLowerCase().contains(text.toLowerCase()) || item.getDescription().toLowerCase().contains(text.toLowerCase()))).collect(Collectors.toUnmodifiableList());
     }
+
+    @Override
+    public boolean isItemAvailable(long itemId) {
+        return false;
+    }
 }

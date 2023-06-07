@@ -1,4 +1,4 @@
-package ru.practicum.shareit.logger;
+package ru.practicum.shareit.utilites;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
