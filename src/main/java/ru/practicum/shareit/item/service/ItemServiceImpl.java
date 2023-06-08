@@ -8,9 +8,9 @@ import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.ReqStatus;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.storage.BookingDbStorage;
+import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.comment.model.Comment;
-import ru.practicum.shareit.comment.storage.CommentDbStorage;
+import ru.practicum.shareit.comment.storage.CommentStorage;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemOutDto2;
 import ru.practicum.shareit.item.model.Item;
@@ -36,9 +36,9 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private UserStorage userStorage;
     @Autowired
-    private BookingDbStorage bookingStorage;
+    private BookingStorage bookingStorage;
     @Autowired
-    private CommentDbStorage commentStorage;
+    private CommentStorage commentStorage;
 
     @Override
     public Item create(Item item, long userId) {
@@ -86,12 +86,6 @@ public class ItemServiceImpl implements ItemService {
                 return status != BookingStatus.CANCELED &&
                         status != BookingStatus.REJECTED;
             }).collect(Collectors.toList());
-/*            if(bookings.size()>0){
-                itemOutDto2.setLastBooking(BookingMapper.toBookingOutDto2(bookings.get(0)));
-                if(bookings.size()>1){
-                    itemOutDto2.setNextBooking(BookingMapper.toBookingOutDto2(bookings.get(1)));
-                }
-            }*/
             itemOutDto2.setLastBooking(BookingMapper.toBookingOutDto2(getLastItem(bookings)));
             itemOutDto2.setNextBooking(BookingMapper.toBookingOutDto2(getNextItem(bookings)));
         }
@@ -102,10 +96,17 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemOutDto2> getAllUserItems(long userId) {
         List<Item> items = itemStorage.getAllUserItems(userId);
         List<ItemOutDto2> outDto2List = new ArrayList<>();
+
+        List<Comment> allComments = commentStorage.getAllCommentsByItemList(items);
+        List<Booking> allBookings = bookingStorage.getAllBookingsByItemList(items);
+
         for (Item item : items) {
-            List<Comment> comments = commentStorage.getCommentByItem(item.getId());
+            List<Comment> comments = allComments.stream().filter(c -> c.getItem().getId() == item.getId())
+                    .collect(Collectors.toList());
             ItemOutDto2 itemOutDto2 = ItemMapper.toItemOutDto2(item, comments);
-            List<Booking> bookings = bookingStorage.getByItem(item.getId());
+            List<Booking> bookings = allBookings.stream().filter(b -> b.getItem().getId() == item.getId())
+                    .collect(Collectors.toList());
+
             bookings = bookings.stream().filter(b -> {
                 BookingStatus status = b.getStatus();
                 return status != BookingStatus.CANCELED &&
@@ -113,12 +114,6 @@ public class ItemServiceImpl implements ItemService {
             }).collect(Collectors.toList());
             itemOutDto2.setLastBooking(BookingMapper.toBookingOutDto2(getLastItem(bookings)));
             itemOutDto2.setNextBooking(BookingMapper.toBookingOutDto2(getNextItem(bookings)));
-/*            if(bookings.size()>0){
-                itemOutDto2.setLastBooking(BookingMapper.toBookingOutDto2(bookings.get(0)));
-                if(bookings.size()>1){
-                    itemOutDto2.setNextBooking(BookingMapper.toBookingOutDto2(bookings.get(1)));
-                }
-            }*/
             outDto2List.add(itemOutDto2);
         }
         return outDto2List;

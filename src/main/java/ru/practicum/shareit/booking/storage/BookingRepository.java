@@ -8,10 +8,16 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+    @Query("select b from Booking b " +
+            "join fetch b.item " +
+            "where b.item.id in ?1")
+    List<Booking> findByItem_IdIn(Collection<Long> ids);
+
     List<Booking> findByBookerId(long bookerId);
 
     @Query("select b " +

@@ -38,7 +38,7 @@ public class BookingController {
 
     @GetMapping
     List<BookingOutDto> getAllBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                      @RequestParam(value = "state", required = false, defaultValue = "ALL")
+                                      @RequestParam(value = "state", defaultValue = "ALL")
                                       String status) throws ParamNotFoundException {
 
         return bookingService.getAllBooking(userId, status, false).stream()
@@ -48,7 +48,7 @@ public class BookingController {
 
     @GetMapping("/owner")
     List<BookingOutDto> getAllBookingOwner(@RequestHeader("X-Sharer-User-Id") long userId,
-                                           @RequestParam(value = "state", required = false, defaultValue = "ALL")
+                                           @RequestParam(value = "state", defaultValue = "ALL")
                                            String status) throws ParamNotFoundException {
         return bookingService.getAllBooking(userId, status, true).stream()
                 .map(BookingMapper::toBookingOutDto)

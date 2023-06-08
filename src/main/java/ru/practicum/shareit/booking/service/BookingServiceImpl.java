@@ -8,7 +8,7 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.ReqStatus;
 import ru.practicum.shareit.booking.dto.BookingInDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.storage.BookingDbStorage;
+import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.storage.UserStorage;
 import ru.practicum.shareit.utilites.ParamNotFoundException;
@@ -24,7 +24,7 @@ import static ru.practicum.shareit.utilites.ShareitLogger.returnErrorMsg;
 @Transactional
 public class BookingServiceImpl implements BookingService {
     @Autowired
-    private BookingDbStorage bookingDbStorage;
+    private BookingStorage bookingDbStorage;
     @Autowired
     private UserStorage userStorage;
     @Autowired

@@ -12,22 +12,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class BookingDbStorage {
+public class BookingDbStorage implements BookingStorage {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Override
     public Booking create(Booking booking) {
         return bookingRepository.save(booking);
     }
 
+    @Override
     public Booking update(Booking booking) {
         return bookingRepository.save(booking);
     }
 
+    @Override
     public Booking getById(long bookingId) {
         return bookingRepository.findById(bookingId).orElse(null);
     }
 
+    @Override
     public List<Booking> getByBookerId(long userId, boolean byOwner) {
         if (!byOwner) return bookingRepository.findByBookerId(userId);
         else {
@@ -37,6 +41,7 @@ public class BookingDbStorage {
         }
     }
 
+    @Override
     public List<Booking> getByBookerIdAndTime(long userId, ReqStatus status, boolean byOwner) {
         List<Booking> ret;
         switch (status) {
@@ -64,6 +69,7 @@ public class BookingDbStorage {
         return ret;
     }
 
+    @Override
     public List<Booking> getByBookerIdAndStatus(long userId, ReqStatus status, boolean byOwner) {
         BookingStatus bookingStatus;
         bookingStatus = BookingStatus.valueOf(status.toString());
@@ -73,13 +79,22 @@ public class BookingDbStorage {
             return bookingRepository.findByStatusOwner(bookingStatus, userId);
     }
 
+    @Override
     public List<Booking> getByItem(Item item) {
         return getByItem(item.getId());
     }
 
+    @Override
     public List<Booking> getByItem(long itemId) {
         return bookingRepository.findAllWithItem().stream()
                 .filter(b -> b.getItem().getId() == itemId)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Booking> getAllBookingsByItemList(List<Item> items) {
+        return bookingRepository.findByItem_IdIn(items.stream()
+                .map(Item::getId)
+                .collect(Collectors.toList()));
     }
 }
