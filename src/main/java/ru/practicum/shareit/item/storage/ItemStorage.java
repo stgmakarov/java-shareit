@@ -17,4 +17,6 @@ public interface ItemStorage {
     List<Item> getAllUserItems(long userId);
 
     List<Item> findByText(String text);
+
+    boolean isItemAvailable(long itemId);
 }

@@ -2,12 +2,13 @@ package ru.practicum.shareit.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.dto.UserInDto;
+import ru.practicum.shareit.user.dto.UserOutDto;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -16,23 +17,23 @@ public class UserController {
     private UserStorage userStorage;
 
     @PostMapping
-    public User create(@Valid @RequestBody UserDto userDto) {
-        return userStorage.create(UserMapper.toUser(userDto));
+    public UserOutDto create(@Valid @RequestBody UserInDto userInDto) {
+        return UserMapper.toUserOutDto(userStorage.create(UserMapper.toUser(userInDto)));
     }
 
     @PatchMapping("{userId}")
-    public User update(@PathVariable long userId, @Valid @RequestBody UserDto userDto) {
-        return userStorage.update(userId, UserMapper.toUser(userDto));
+    public UserOutDto update(@PathVariable long userId, @Valid @RequestBody UserInDto userInDto) {
+        return UserMapper.toUserOutDto(userStorage.update(userId, UserMapper.toUser(userInDto)));
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userStorage.getAll();
+    public List<UserOutDto> getAllUsers() {
+        return userStorage.getAll().stream().map(UserMapper::toUserOutDto).collect(Collectors.toList());
     }
 
     @GetMapping("{userId}")
-    public User getUser(@PathVariable long userId) {
-        return userStorage.get(userId);
+    public UserOutDto getUser(@PathVariable long userId) {
+        return UserMapper.toUserOutDto(userStorage.get(userId));
     }
 
     @DeleteMapping("{userId}")

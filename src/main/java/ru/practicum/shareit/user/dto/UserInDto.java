@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 
 @Data
-public class UserDto {
+public class UserInDto {
     /*
         id — уникальный идентификатор пользователя;
         name — имя или логин пользователя;

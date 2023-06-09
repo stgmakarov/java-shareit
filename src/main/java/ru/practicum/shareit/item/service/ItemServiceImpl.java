@@ -4,12 +4,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.BookingMapper;
+import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.booking.ReqStatus;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.storage.BookingStorage;
+import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.comment.storage.CommentStorage;
+import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.dto.ItemOutDto2;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.logger.ShareitLogger;
 import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.utilites.ShareitLogger;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.time.LocalDateTime.now;
+import static java.util.Comparator.comparing;
 
 /**
  * @author Stanislav Makarov
@@ -21,6 +35,10 @@ public class ItemServiceImpl implements ItemService {
     private ItemStorage itemStorage;
     @Autowired
     private UserStorage userStorage;
+    @Autowired
+    private BookingStorage bookingStorage;
+    @Autowired
+    private CommentStorage commentStorage;
 
     @Override
     public Item create(Item item, long userId) {
@@ -49,21 +67,122 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item getById(long itemId) {
-        return itemStorage.getById(itemId);
+        Item existItem = itemStorage.getById(itemId);
+        if (existItem == null)
+            ShareitLogger.returnErrorMsg(HttpStatus.NOT_FOUND, String.format("ID вещи %d не найден", itemId));
+
+        return existItem;
     }
 
     @Override
-    public List<Item> getAllUserItems(long userId) {
-        return itemStorage.getAllUserItems(userId);
+    public ItemOutDto2 getByIdDto2(long itemId, long userId) {
+        Item item = getById(itemId);
+        List<Comment> comments = commentStorage.getCommentByItem(itemId);
+        ItemOutDto2 itemOutDto2 = ItemMapper.toItemOutDto2(item, comments);
+        if (item.getOwner().getId() == userId) {
+            List<Booking> bookings = bookingStorage.getByItem(itemId);
+            bookings = bookings.stream().filter(b -> {
+                BookingStatus status = b.getStatus();
+                return status != BookingStatus.CANCELED &&
+                        status != BookingStatus.REJECTED;
+            }).collect(Collectors.toList());
+            itemOutDto2.setLastBooking(BookingMapper.toBookingOutDto2(getLastItem(bookings)));
+            itemOutDto2.setNextBooking(BookingMapper.toBookingOutDto2(getNextItem(bookings)));
+        }
+        return itemOutDto2;
+    }
+
+    @Override
+    public List<ItemOutDto2> getAllUserItems(long userId) {
+        List<Item> items = itemStorage.getAllUserItems(userId);
+        List<ItemOutDto2> outDto2List = new ArrayList<>();
+
+        List<Comment> allComments = commentStorage.getAllCommentsByItemList(items);
+        List<Booking> allBookings = bookingStorage.getAllBookingsByItemList(items);
+
+        for (Item item : items) {
+            List<Comment> comments = allComments.stream().filter(c -> c.getItem().getId() == item.getId())
+                    .collect(Collectors.toList());
+            ItemOutDto2 itemOutDto2 = ItemMapper.toItemOutDto2(item, comments);
+            List<Booking> bookings = allBookings.stream().filter(b -> b.getItem().getId() == item.getId())
+                    .collect(Collectors.toList());
+
+            bookings = bookings.stream().filter(b -> {
+                BookingStatus status = b.getStatus();
+                return status != BookingStatus.CANCELED &&
+                        status != BookingStatus.REJECTED;
+            }).collect(Collectors.toList());
+            itemOutDto2.setLastBooking(BookingMapper.toBookingOutDto2(getLastItem(bookings)));
+            itemOutDto2.setNextBooking(BookingMapper.toBookingOutDto2(getNextItem(bookings)));
+            outDto2List.add(itemOutDto2);
+        }
+        return outDto2List;
     }
 
     @Override
     public List<Item> findByText(String text) {
+        if (text.isBlank()) return new ArrayList<>();
         return itemStorage.findByText(text);
+    }
+
+    @Override
+    public boolean isItemAvailable(long itemId) {
+        return itemStorage.isItemAvailable(itemId);
+    }
+
+    @Override
+    public List<Comment> getItemComment(long itemId) {
+        return commentStorage.getCommentByItem(itemId);
+    }
+
+    @Override
+    public Comment addComment(long itemId, long userId, String text) {
+        if (isNullOrBlank(text))
+            ShareitLogger.returnErrorMsg(HttpStatus.BAD_REQUEST, "Комментарий не может быть пуст");
+        Item item = getById(itemId);
+        List<Booking> bookings = bookingStorage.getByBookerIdAndTime(userId, ReqStatus.PAST, false);
+        if (bookings.isEmpty())
+            ShareitLogger.returnErrorMsg(HttpStatus.BAD_REQUEST, "Нельзя комментировать тому кто не брал вещь");
+
+        Comment comment = new Comment(
+                0,
+                text,
+                item,
+                userStorage.get(userId),
+                now());
+
+        return commentStorage.save(comment);
     }
 
     private boolean isNullOrBlank(String str) {
         if (str == null) return true;
         return str.isBlank();
+    }
+
+    private Booking getNextItem(List<Booking> bookings) {
+        if (bookings != null)
+            return bookings.stream()
+                    .filter(booking -> booking.getStart().isAfter(now()))
+                    .min(comparing(Booking::getEnd))
+                    .orElse(null);
+        else
+            return null;
+    }
+
+    private Booking getLastItem(List<Booking> bookings) {
+        if (bookings != null) {
+            Booking res = bookings.stream()
+                    .filter(booking -> booking.getEnd().isBefore(now()))
+                    .max(comparing(Booking::getEnd))
+                    .orElse(null);
+            if (res == null) {
+                res = bookings.stream()
+                        .filter(booking -> booking.getStart().isBefore(now()))
+                        .max(comparing(Booking::getStart))
+                        .orElse(null);
+            }
+            return res;
+        } else
+            return null;
     }
 }

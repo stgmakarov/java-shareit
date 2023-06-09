@@ -21,4 +21,5 @@ public interface UserStorage {
     User create(User user);
 
     List<User> getAll();
+
 }
