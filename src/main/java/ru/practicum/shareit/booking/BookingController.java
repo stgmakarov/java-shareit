@@ -7,7 +7,6 @@ import ru.practicum.shareit.booking.dto.BookingOutDto;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.utilites.ParamNotFoundException;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +17,7 @@ public class BookingController {
     private BookingService bookingService;
 
     @PostMapping
-    BookingOutDto create(@Valid @RequestBody BookingInDto bookingInDto,
+    BookingOutDto create(@RequestBody BookingInDto bookingInDto,
                          @RequestHeader("X-Sharer-User-Id") long userId) {
         return BookingMapper.toBookingOutDto(bookingService.create(bookingInDto, userId));
     }
@@ -38,19 +37,23 @@ public class BookingController {
 
     @GetMapping
     List<BookingOutDto> getAllBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                      @RequestParam(value = "state", defaultValue = "ALL")
-                                      String status) throws ParamNotFoundException {
+                                      @RequestParam(value = "state", defaultValue = "ALL") String status,
+                                      @RequestParam(value = "from", required = false) Long from,
+                                      @RequestParam(value = "size", required = false) Long size)
+            throws ParamNotFoundException {
 
-        return bookingService.getAllBooking(userId, status, false).stream()
+        return bookingService.getAllBooking(userId, status, false, from, size).stream()
                 .map(BookingMapper::toBookingOutDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/owner")
     List<BookingOutDto> getAllBookingOwner(@RequestHeader("X-Sharer-User-Id") long userId,
-                                           @RequestParam(value = "state", defaultValue = "ALL")
-                                           String status) throws ParamNotFoundException {
-        return bookingService.getAllBooking(userId, status, true).stream()
+                                           @RequestParam(value = "state", defaultValue = "ALL") String status,
+                                           @RequestParam(value = "from", required = false) Long from,
+                                           @RequestParam(value = "size", required = false) Long size)
+            throws ParamNotFoundException {
+        return bookingService.getAllBooking(userId, status, true, from, size).stream()
                 .map(BookingMapper::toBookingOutDto)
                 .collect(Collectors.toList());
     }

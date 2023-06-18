@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -12,12 +13,16 @@ import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.comment.storage.CommentStorage;
 import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.dto.ItemInDto;
 import ru.practicum.shareit.item.dto.ItemOutDto2;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.storage.UserStorage;
-import ru.practicum.shareit.utilites.ShareitLogger;
+import ru.practicum.shareit.utilites.ShareitHelper;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +35,7 @@ import static java.util.Comparator.comparing;
  */
 @Service
 @Slf4j
+@Transactional
 public class ItemServiceImpl implements ItemService {
     @Autowired
     private ItemStorage itemStorage;
@@ -39,29 +45,42 @@ public class ItemServiceImpl implements ItemService {
     private BookingStorage bookingStorage;
     @Autowired
     private CommentStorage commentStorage;
+    @Autowired
+    private ItemRequestService requestService;
 
     @Override
-    public Item create(Item item, long userId) {
-        if (userId <= 0) ShareitLogger.returnErrorMsg(HttpStatus.INTERNAL_SERVER_ERROR,
+    public Item create(ItemInDto itemInDto, long userId) {
+        if (userId <= 0) ShareitHelper.returnErrorMsg(HttpStatus.INTERNAL_SERVER_ERROR,
                 "Не указан пользователь");
+
+        Item item = ItemMapper.toItem(itemInDto);
+
         if (isNullOrBlank(item.getName()))
-            ShareitLogger.returnErrorMsg(HttpStatus.BAD_REQUEST, "Не задано название вещи");
+            ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Не задано название вещи");
         if (isNullOrBlank(item.getDescription()))
-            ShareitLogger.returnErrorMsg(HttpStatus.BAD_REQUEST, "Не задано описание вещи");
+            ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Не задано описание вещи");
         if (item.getAvailable() == null)
-            ShareitLogger.returnErrorMsg(HttpStatus.BAD_REQUEST, "Не указана доступность вещи");
+            ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Не указана доступность вещи");
 
         item.setOwner(userStorage.get(userId));
+        if (itemInDto.getRequestId() != null) {
+            ItemRequest itemRequest = requestService.getById(itemInDto.getRequestId(), userId);
+            if (itemRequest == null)
+                ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Указан несуществующий запрос");
+            item.setRequest(itemRequest);
+        }
+
         return itemStorage.create(item);
     }
 
     @Override
-    public Item update(long itemId, Item item, long userId) {
+    public Item update(long itemId, ItemInDto itemInDto, long userId) {
         Item existItem = itemStorage.getById(itemId);
         if (existItem == null)
-            ShareitLogger.returnErrorMsg(HttpStatus.NOT_FOUND, String.format("ID вещи %d не найден", itemId));
+            ShareitHelper.returnErrorMsg(HttpStatus.NOT_FOUND, String.format("ID вещи %d не найден", itemId));
         if (existItem.getOwner().getId() != userId)
-            ShareitLogger.returnErrorMsg(HttpStatus.FORBIDDEN, "Редактировать вещь может только её владелец.");
+            ShareitHelper.returnErrorMsg(HttpStatus.FORBIDDEN, "Редактировать вещь может только её владелец.");
+        Item item = ItemMapper.toItem(itemInDto);
         return itemStorage.update(itemId, item);
     }
 
@@ -69,7 +88,7 @@ public class ItemServiceImpl implements ItemService {
     public Item getById(long itemId) {
         Item existItem = itemStorage.getById(itemId);
         if (existItem == null)
-            ShareitLogger.returnErrorMsg(HttpStatus.NOT_FOUND, String.format("ID вещи %d не найден", itemId));
+            ShareitHelper.returnErrorMsg(HttpStatus.NOT_FOUND, String.format("ID вещи %d не найден", itemId));
 
         return existItem;
     }
@@ -138,11 +157,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Comment addComment(long itemId, long userId, String text) {
         if (isNullOrBlank(text))
-            ShareitLogger.returnErrorMsg(HttpStatus.BAD_REQUEST, "Комментарий не может быть пуст");
+            ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Комментарий не может быть пуст");
         Item item = getById(itemId);
-        List<Booking> bookings = bookingStorage.getByBookerIdAndTime(userId, ReqStatus.PAST, false);
+        List<Booking> bookings = bookingStorage.getByBookerIdAndTime(userId, ReqStatus.PAST, false, Pageable.unpaged());
         if (bookings.isEmpty())
-            ShareitLogger.returnErrorMsg(HttpStatus.BAD_REQUEST, "Нельзя комментировать тому кто не брал вещь");
+            ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Нельзя комментировать тому кто не брал вещь");
 
         Comment comment = new Comment(
                 0,

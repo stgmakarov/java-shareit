@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class CommentMapper {
     public static CommentOutDto toCommentDto(Comment comment) {
+        if (comment == null) return null;
         return new CommentOutDto(
                 comment.getId(),
                 comment.getText(),

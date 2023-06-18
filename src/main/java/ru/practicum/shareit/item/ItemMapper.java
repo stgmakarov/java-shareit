@@ -16,6 +16,7 @@ import java.util.List;
 @UtilityClass
 public class ItemMapper {
     public static ItemOutDto toItemOutDto(Item item) {
+        if (item == null) return null;
         return new ItemOutDto(
                 item.getId(),
                 item.getName(),

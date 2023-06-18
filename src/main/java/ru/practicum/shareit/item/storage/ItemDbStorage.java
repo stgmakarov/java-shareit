@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.utilites.ShareitLogger;
+import ru.practicum.shareit.utilites.ShareitHelper;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class ItemDbStorage implements ItemStorage {
     public Item getById(long itemId) {
         Item item = itemRepository.findById(itemId).orElse(null);
         if (item == null)
-            ShareitLogger.returnErrorMsg(HttpStatus.NOT_FOUND, String.format("Вещь с ИД %d не найдена", itemId));
+            ShareitHelper.returnErrorMsg(HttpStatus.NOT_FOUND, String.format("Вещь с ИД %d не найдена", itemId));
         return item;
     }
 

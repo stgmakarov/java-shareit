@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.storage;
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.ReqStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
@@ -13,11 +14,11 @@ public interface BookingStorage {
 
     Booking getById(long bookingId);
 
-    List<Booking> getByBookerId(long userId, boolean byOwner);
+    List<Booking> getByBookerId(long userId, boolean byOwner, Pageable pageable);
 
-    List<Booking> getByBookerIdAndTime(long userId, ReqStatus status, boolean byOwner);
+    List<Booking> getByBookerIdAndTime(long userId, ReqStatus status, boolean byOwner, Pageable pageable);
 
-    List<Booking> getByBookerIdAndStatus(long userId, ReqStatus status, boolean byOwner);
+    List<Booking> getByBookerIdAndStatus(long userId, ReqStatus status, boolean byOwner, Pageable pageable);
 
     List<Booking> getByItem(Item item);
 

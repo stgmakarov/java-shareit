@@ -17,6 +17,7 @@ public class UserMapper {
     }
 
     public static UserOutDto toUserOutDto(User user) {
+        if (user == null) return null;
         return new UserOutDto(user.getId(),
                 user.getName(),
                 user.getEmail());

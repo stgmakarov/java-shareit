@@ -18,12 +18,12 @@ public class UserController {
 
     @PostMapping
     public UserOutDto create(@Valid @RequestBody UserInDto userInDto) {
-        return UserMapper.toUserOutDto(userStorage.create(UserMapper.toUser(userInDto)));
+        return UserMapper.toUserOutDto(userStorage.create(userInDto));
     }
 
     @PatchMapping("{userId}")
     public UserOutDto update(@PathVariable long userId, @Valid @RequestBody UserInDto userInDto) {
-        return UserMapper.toUserOutDto(userStorage.update(userId, UserMapper.toUser(userInDto)));
+        return UserMapper.toUserOutDto(userStorage.update(userId, userInDto));
     }
 
     @GetMapping
