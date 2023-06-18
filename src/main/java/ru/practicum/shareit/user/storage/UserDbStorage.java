@@ -39,7 +39,7 @@ public class UserDbStorage implements UserStorage {
         return getById(id);
     }
 
-    private User getById(long id) {
+    public User getById(long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) ShareitHelper.returnErrorMsg(HttpStatus.NOT_FOUND,
                 String.format("ID %d пользователя не найден", id));

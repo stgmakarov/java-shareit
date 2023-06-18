@@ -1,5 +1,8 @@
 package ru.practicum.shareit.item.service;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +39,9 @@ import static java.util.Comparator.comparing;
 @Service
 @Slf4j
 @Transactional
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ItemServiceImpl implements ItemService {
     @Autowired
     private ItemStorage itemStorage;
