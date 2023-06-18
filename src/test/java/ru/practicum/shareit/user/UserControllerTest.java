@@ -34,8 +34,8 @@ public class UserControllerTest {
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(cont)));
-        verify(userStorage, times(1)).
-                create(userInDto);
+        verify(userStorage, times(1))
+                .create(userInDto);
     }
 
     @Test

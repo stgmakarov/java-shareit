@@ -81,8 +81,8 @@ public class BookingControllerTest {
                 )
                 .andExpect(status().isOk()
                 );
-        verify(bookingService, times(1)).
-                setApprove(1, userId, true);
+        verify(bookingService, times(1))
+                .setApprove(1, userId, true);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class BookingControllerTest {
                 .header("X-Sharer-User-Id", userId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(cont)));
-        verify(bookingService, times(1)).
-                create(bookingInDto, userId);
+        verify(bookingService, times(1))
+                .create(bookingInDto, userId);
     }
 }

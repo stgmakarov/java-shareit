@@ -38,8 +38,8 @@ public class ItemControllerTest {
                 .header("X-Sharer-User-Id", userId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(cont)));
-        verify(itemService, times(1)).
-                create(itemInDto, userId);
+        verify(itemService, times(1))
+                .create(itemInDto, userId);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class ItemControllerTest {
                 .header("X-Sharer-User-Id", userId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(cont)));
-        verify(itemService, times(1)).
-                addComment(itemId, userId, "Хорошая весчь");
+        verify(itemService, times(1))
+                .addComment(itemId, userId, "Хорошая весчь");
     }
 }

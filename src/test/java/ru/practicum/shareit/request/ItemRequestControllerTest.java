@@ -39,8 +39,8 @@ public class ItemRequestControllerTest {
                 .header("X-Sharer-User-Id", userId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(cont)));
-        verify(itemRequestService, times(1)).
-                create(itemRequestInDto, userId);
+        verify(itemRequestService, times(1))
+                .create(itemRequestInDto, userId);
     }
 
     @Test
