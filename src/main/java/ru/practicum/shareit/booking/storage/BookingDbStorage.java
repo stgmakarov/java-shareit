@@ -44,22 +44,16 @@ public class BookingDbStorage implements BookingStorage {
         List<Booking> ret = new ArrayList<>();
         switch (status) {
             case CURRENT:
-                if (!byOwner)
-                    ret = bookingRepository.findByDateCurrentBooker(LocalDateTime.now(), userId, pageable);
-                else
-                    ret = bookingRepository.findByDateCurrentOwner(LocalDateTime.now(), userId, pageable);
+                if (!byOwner) ret = bookingRepository.findByDateCurrentBooker(LocalDateTime.now(), userId, pageable);
+                else ret = bookingRepository.findByDateCurrentOwner(LocalDateTime.now(), userId, pageable);
                 break;
             case FUTURE:
-                if (!byOwner)
-                    ret = bookingRepository.findByDateFutureBooker(LocalDateTime.now(), userId, pageable);
-                else
-                    ret = bookingRepository.findByDateFutureOwner(LocalDateTime.now(), userId, pageable);
+                if (!byOwner) ret = bookingRepository.findByDateFutureBooker(LocalDateTime.now(), userId, pageable);
+                else ret = bookingRepository.findByDateFutureOwner(LocalDateTime.now(), userId, pageable);
                 break;
             case PAST:
-                if (!byOwner)
-                    ret = bookingRepository.findByDatePastBooker(LocalDateTime.now(), userId, pageable);
-                else
-                    ret = bookingRepository.findByDatePastOwner(LocalDateTime.now(), userId, pageable);
+                if (!byOwner) ret = bookingRepository.findByDatePastBooker(LocalDateTime.now(), userId, pageable);
+                else ret = bookingRepository.findByDatePastOwner(LocalDateTime.now(), userId, pageable);
                 break;
         }
         return ret;
@@ -69,10 +63,8 @@ public class BookingDbStorage implements BookingStorage {
     public List<Booking> getByBookerIdAndStatus(long userId, ReqStatus status, boolean byOwner, Pageable pageable) {
         BookingStatus bookingStatus;
         bookingStatus = BookingStatus.valueOf(status.toString());
-        if (!byOwner)
-            return bookingRepository.findByStatusBooker(bookingStatus, userId, pageable);
-        else
-            return bookingRepository.findByStatusOwner(bookingStatus, userId, pageable);
+        if (!byOwner) return bookingRepository.findByStatusBooker(bookingStatus, userId, pageable);
+        else return bookingRepository.findByStatusOwner(bookingStatus, userId, pageable);
     }
 
     @Override

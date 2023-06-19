@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user.storage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.user.UserMapper;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Component
-@Primary
 public class UserDbStorage implements UserStorage {
     private final Pattern emailPattern =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);

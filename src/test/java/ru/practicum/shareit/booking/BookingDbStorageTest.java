@@ -15,12 +15,12 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,10 +50,10 @@ public class BookingDbStorageTest {
         Booking booking = new Booking();
         booking.setId(1L);
         booking.setBooker(new User(1L, "name", "user@mail.com"));
-        when(bookingRepository.save(booking)).thenReturn(booking);
+        when(bookingRepository.save(any(Booking.class))).thenAnswer(
+                invocationOnMock -> invocationOnMock.getArgument(0));
         Booking createdBooking = bookingDbStorage.create(booking);
         createdBooking.setStatus(BookingStatus.APPROVED);
-        when(bookingRepository.save(createdBooking)).thenReturn(createdBooking);
         Booking updatedBooking = bookingDbStorage.update(createdBooking);
         assertEquals(createdBooking.getStatus(), updatedBooking.getStatus());
     }
@@ -64,7 +64,7 @@ public class BookingDbStorageTest {
         Booking booking = new Booking();
         booking.setId(1L);
         booking.setId(bookingId);
-        when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         Booking foundBooking = bookingDbStorage.getById(bookingId);
         assertEquals(foundBooking.getId(), booking.getId());
     }
@@ -76,7 +76,8 @@ public class BookingDbStorageTest {
         Pageable pageable = PageRequest.of(0, 20);
         List<Booking> bookings = new ArrayList<>();
         bookings.add(new Booking());
-        when(bookingRepository.findByItem_Owner_IdOrderByStartDesc(userId, pageable)).thenReturn(bookings);
+        when(bookingRepository.findByItem_Owner_IdOrderByStartDesc(anyLong(), any(Pageable.class)))
+                .thenReturn(bookings);
         List<Booking> foundBookings = bookingDbStorage.getByBookerId(userId, byOwner, pageable);
         assertEquals(foundBookings.size(), bookings.size());
     }
@@ -86,31 +87,39 @@ public class BookingDbStorageTest {
         long userId = 1L;
         Pageable pageable = PageRequest.of(0, 20);
 
-        List<Booking> expected = new ArrayList<>();
-        lenient().when(bookingRepository.findByDateCurrentBooker(LocalDateTime.now(), userId, pageable)).thenReturn(expected);
-        lenient().when(bookingRepository.findByDateCurrentOwner(LocalDateTime.now(), userId, pageable)).thenReturn(expected);
+        Booking booking = new Booking();
+        booking.setId(10L);
 
-        lenient().when(bookingRepository.findByDateFutureBooker(LocalDateTime.now(), userId, pageable)).thenReturn(expected);
-        lenient().when(bookingRepository.findByDateFutureOwner(LocalDateTime.now(), userId, pageable)).thenReturn(expected);
+        List<Booking> expected = Collections.singletonList(booking);
+        when(bookingRepository.findByDateCurrentBooker(any(LocalDateTime.class), anyLong(), any(Pageable.class)))
+                .thenReturn(expected);
+        when(bookingRepository.findByDateCurrentOwner(any(LocalDateTime.class), anyLong(), any(Pageable.class)))
+                .thenReturn(expected);
 
-        lenient().when(bookingRepository.findByDatePastBooker(LocalDateTime.now(), userId, pageable)).thenReturn(expected);
-        lenient().when(bookingRepository.findByDatePastOwner(LocalDateTime.now(), userId, pageable)).thenReturn(expected);
+        when(bookingRepository.findByDateFutureBooker(any(LocalDateTime.class), anyLong(), any(Pageable.class)))
+                .thenReturn(expected);
+        when(bookingRepository.findByDateFutureOwner(any(LocalDateTime.class), anyLong(), any(Pageable.class)))
+                .thenReturn(expected);
 
+        when(bookingRepository.findByDatePastBooker(any(LocalDateTime.class), anyLong(), any(Pageable.class)))
+                .thenReturn(expected);
+        when(bookingRepository.findByDatePastOwner(any(LocalDateTime.class), anyLong(), any(Pageable.class)))
+                .thenReturn(expected);
 
         List<Booking> actual1 = bookingDbStorage.getByBookerIdAndTime(userId, ReqStatus.CURRENT, false, pageable);
         assertEquals(expected, actual1);
         List<Booking> actual2 = bookingDbStorage.getByBookerIdAndTime(userId, ReqStatus.CURRENT, true, pageable);
-        assertEquals(expected, actual1);
+        assertEquals(expected, actual2);
 
         List<Booking> fut1 = bookingDbStorage.getByBookerIdAndTime(userId, ReqStatus.FUTURE, false, pageable);
         assertEquals(expected, fut1);
         List<Booking> fut2 = bookingDbStorage.getByBookerIdAndTime(userId, ReqStatus.FUTURE, true, pageable);
-        assertEquals(expected, fut1);
+        assertEquals(expected, fut2);
 
         List<Booking> pas1 = bookingDbStorage.getByBookerIdAndTime(userId, ReqStatus.PAST, false, pageable);
         assertEquals(expected, pas1);
         List<Booking> pas2 = bookingDbStorage.getByBookerIdAndTime(userId, ReqStatus.PAST, true, pageable);
-        assertEquals(expected, pas1);
+        assertEquals(expected, pas2);
     }
 
     @Test
@@ -133,7 +142,7 @@ public class BookingDbStorageTest {
         assertEquals(bookings.size(), result.size());
 
         List<Booking> result2 = bookingDbStorage.getByBookerIdAndStatus(userId, ReqStatus.WAITING, !byOwner, pageable);
-        assertEquals(bookings.size(), result.size());
+        assertEquals(0, result2.size());
     }
 
     @Test
