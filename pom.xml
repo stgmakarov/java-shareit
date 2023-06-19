@@ -72,7 +72,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <resources>
             <resource>
@@ -254,5 +253,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>
