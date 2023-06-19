@@ -14,7 +14,7 @@ public class CommentDbStorage implements CommentStorage {
     private CommentRepository commentRepository;
 
     @Override
-    public List<Comment> getCommentByItem(long itemId) {
+    public List<Comment> getCommentByItem(Long itemId) {
         return commentRepository.findByItem_id(itemId);
     }
 

@@ -9,6 +9,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class BookingDbStorage implements BookingStorage {
 
     @Override
     public List<Booking> getByBookerIdAndTime(long userId, ReqStatus status, boolean byOwner, Pageable pageable) {
-        List<Booking> ret;
+        List<Booking> ret = new ArrayList<>();
         switch (status) {
             case CURRENT:
                 if (!byOwner)
@@ -60,8 +61,6 @@ public class BookingDbStorage implements BookingStorage {
                 else
                     ret = bookingRepository.findByDatePastOwner(LocalDateTime.now(), userId, pageable);
                 break;
-            default:
-                throw new RuntimeException("Некорректный параметр");
         }
         return ret;
     }

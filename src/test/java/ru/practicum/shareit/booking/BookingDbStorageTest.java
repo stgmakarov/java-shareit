@@ -130,7 +130,9 @@ public class BookingDbStorageTest {
         when(bookingRepository.findByStatusBooker(any(), anyLong(), any(Pageable.class))).thenReturn(bookings);
 
         List<Booking> result = bookingDbStorage.getByBookerIdAndStatus(userId, ReqStatus.WAITING, byOwner, pageable);
+        assertEquals(bookings.size(), result.size());
 
+        List<Booking> result2 = bookingDbStorage.getByBookerIdAndStatus(userId, ReqStatus.WAITING, !byOwner, pageable);
         assertEquals(bookings.size(), result.size());
     }
 
@@ -148,6 +150,24 @@ public class BookingDbStorageTest {
 
         when(bookingRepository.findAllWithItem(any(Pageable.class))).thenReturn(bookings);
         List<Booking> result = bookingDbStorage.getByItem(itemId);
+
+        assertEquals(bookings.size(), result.size());
+    }
+
+    @Test
+    public void testGetByItem2() {
+        long itemId = 1L;
+
+        List<Booking> bookings = new ArrayList<>();
+        Booking booking1 = new Booking();
+        booking1.setId(1L);
+        Item item = new Item();
+        item.setId(itemId);
+        booking1.setItem(item);
+        bookings.add(booking1);
+
+        when(bookingRepository.findAllWithItem(any(Pageable.class))).thenReturn(bookings);
+        List<Booking> result = bookingDbStorage.getByItem(item);
 
         assertEquals(bookings.size(), result.size());
     }

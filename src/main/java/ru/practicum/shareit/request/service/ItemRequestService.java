@@ -19,14 +19,17 @@ import java.util.List;
 @Service
 @Transactional
 public class ItemRequestService {
+    private final ItemRequestRepository requestRepository;
+    private final UserStorage userStorage;
+
     @Autowired
-    private ItemRequestRepository requestRepository;
-    @Autowired
-    private UserStorage userStorage;
+    public ItemRequestService(ItemRequestRepository requestRepository, UserStorage userStorage) {
+        this.requestRepository = requestRepository;
+        this.userStorage = userStorage;
+    }
 
     public ItemRequest create(ItemRequestInDto itemRequestInDto, long userId) {
         User user = userStorage.get(userId);
-
         if (itemRequestInDto.getDescription().isBlank())
             ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Текст не может быть пустой");
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestInDto, user, new ArrayList<>());

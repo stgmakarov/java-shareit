@@ -165,7 +165,8 @@ public class ItemServiceImpl implements ItemService {
         if (isNullOrBlank(text))
             ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Комментарий не может быть пуст");
         Item item = getById(itemId);
-        List<Booking> bookings = bookingStorage.getByBookerIdAndTime(userId, ReqStatus.PAST, false, Pageable.unpaged());
+        List<Booking> bookings = bookingStorage.getByBookerIdAndTime(
+                userId, ReqStatus.PAST, false, Pageable.unpaged());
         if (bookings.isEmpty())
             ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Нельзя комментировать тому кто не брал вещь");
 

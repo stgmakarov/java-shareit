@@ -6,7 +6,7 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.List;
 
 public interface CommentStorage {
-    List<Comment> getCommentByItem(long itemId);
+    List<Comment> getCommentByItem(Long itemId);
 
     Comment save(Comment comment);
 
