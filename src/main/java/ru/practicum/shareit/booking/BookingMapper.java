@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.model.User;
 @UtilityClass
 public class BookingMapper {
     public static BookingOutDto toBookingOutDto(Booking booking) {
+        if (booking == null) return new BookingOutDto();
         return new BookingOutDto(
                 booking.getId(),
                 booking.getStart(),

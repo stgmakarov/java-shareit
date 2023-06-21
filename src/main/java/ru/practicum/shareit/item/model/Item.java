@@ -33,6 +33,6 @@ public class Item {
     @JoinColumn(name = "owner_id")
     private User owner;
     @ManyToOne
-    @JoinColumn(name = "request_id")
+    //@JoinColumn(name = "request_id")
     private ItemRequest request;
 }

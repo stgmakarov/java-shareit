@@ -1,23 +1,22 @@
 package ru.practicum.shareit.user.storage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.dto.UserInDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.utilites.ShareitLogger;
+import ru.practicum.shareit.utilites.ShareitHelper;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
 @Component
-@Primary
 public class UserDbStorage implements UserStorage {
-    @Autowired
-    private UserRepository userRepository;
-
     private final Pattern emailPattern =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public User create(String name, String email) {
@@ -29,7 +28,7 @@ public class UserDbStorage implements UserStorage {
     public User get(String email) {
         User user = userRepository.findDistinctByEmailIgnoreCase(email);
         if (user == null)
-            ShareitLogger.returnErrorMsg(HttpStatus.NOT_FOUND, String.format("EMail %s не найден", email));
+            ShareitHelper.returnErrorMsg(HttpStatus.NOT_FOUND, String.format("EMail %s не найден", email));
         return user;
     }
 
@@ -38,18 +37,20 @@ public class UserDbStorage implements UserStorage {
         return getById(id);
     }
 
-    private User getById(long id) {
+    public User getById(long id) {
         User user = userRepository.findById(id).orElse(null);
-        if (user == null) ShareitLogger.returnErrorMsg(HttpStatus.NOT_FOUND, String.format("ID %d не найден", id));
+        if (user == null) ShareitHelper.returnErrorMsg(HttpStatus.NOT_FOUND,
+                String.format("ID %d пользователя не найден", id));
         return user;
     }
 
     @Override
-    public User update(long userId, User user) {
+    public User update(long userId, UserInDto userInDto) {
+        User user = UserMapper.toUser(userInDto);
         User existUser = getById(userId);
 
         if (user.getName().isEmpty() && user.getEmail().isEmpty()) {
-            ShareitLogger.returnErrorMsg(HttpStatus.BAD_REQUEST, "Не указаны поля для изменения");
+            ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Не указаны поля для изменения");
         }
 
         //смена почты
@@ -76,7 +77,8 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User create(User user) {
+    public User create(UserInDto userInDto) {
+        User user = UserMapper.toUser(userInDto);
         return create(user.getName(), user.getEmail());
     }
 
@@ -87,9 +89,9 @@ public class UserDbStorage implements UserStorage {
 
     private void checkEmail(String email) {
         if (email.isBlank()) {
-            ShareitLogger.returnErrorMsg(HttpStatus.BAD_REQUEST, "Email должен быть указан.");
+            ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Email должен быть указан.");
         } else if (!checkEmailFormat(email)) {
-            ShareitLogger.returnErrorMsg(HttpStatus.BAD_REQUEST, "Email в неправильном формате.");
+            ShareitHelper.returnErrorMsg(HttpStatus.BAD_REQUEST, "Email в неправильном формате.");
         }
     }
 

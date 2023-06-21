@@ -13,6 +13,6 @@ public interface BookingService {
 
     Booking getBooking(long bookingId, long userId);
 
-    List<Booking> getAllBooking(long userId, String status, boolean byOwner) throws ParamNotFoundException;
-
+    List<Booking> getAllBooking(long userId, String status, boolean byOwner, Long from, Long size)
+            throws ParamNotFoundException;
 }

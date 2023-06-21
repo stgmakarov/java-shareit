@@ -16,7 +16,7 @@ public class ItemOutDto2 {
     private String description;
     private Boolean available;
     private User owner;
-    private Long request;
+    private Long requestId;
     private BookingOutDto2 lastBooking;
     private BookingOutDto2 nextBooking;
     private List<CommentOutDto> comments;
