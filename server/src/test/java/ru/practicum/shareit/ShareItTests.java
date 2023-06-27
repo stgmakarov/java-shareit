@@ -9,7 +9,7 @@ class ShareItTests {
 
     @Test
     void testMainApp() {
-        Assertions.assertDoesNotThrow(ShareItApp::new);
-        Assertions.assertDoesNotThrow(() -> ShareItApp.main(new String[]{}));
+        Assertions.assertDoesNotThrow(ShareItServer::new);
+        Assertions.assertDoesNotThrow(() -> ShareItServer.main(new String[]{}));
     }
 }
