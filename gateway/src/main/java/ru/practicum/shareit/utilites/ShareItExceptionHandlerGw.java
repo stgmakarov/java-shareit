@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.Map;
 
 @ControllerAdvice
-public class ShareItExceptionHandler {
+public class ShareItExceptionHandlerGw {
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleHappinessOverflow(final ParamNotFoundException e) {
+    public ResponseEntity<Map<String, String>> handleHappinessOverflow(final ParamNotFoundExceptionGw e) {
         return new ResponseEntity<>(
                 Map.of("error", e.getLocalizedMessage()),
                 HttpStatus.BAD_REQUEST

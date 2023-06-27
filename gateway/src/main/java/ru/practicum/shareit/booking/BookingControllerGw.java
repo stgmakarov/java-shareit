@@ -8,7 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingInDtoGw;
 import ru.practicum.shareit.booking.dto.ReqStatusGw;
-import ru.practicum.shareit.utilites.ParamNotFoundException;
+import ru.practicum.shareit.utilites.ParamNotFoundExceptionGw;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -27,13 +27,13 @@ public class BookingControllerGw {
                                                 @RequestParam(name = "state", defaultValue = "ALL") String stateParam,
                                                 @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                 @Positive @RequestParam(name = "size", defaultValue = "10") Integer size)
-            throws ParamNotFoundException {
+            throws ParamNotFoundExceptionGw {
 
         ReqStatusGw state;
         try {
             state = ReqStatusGw.valueOf(stateParam.toUpperCase());
         } catch (Exception i) {
-            throw new ParamNotFoundException("Unknown state: " + stateParam);
+            throw new ParamNotFoundExceptionGw("Unknown state: " + stateParam);
         }
 
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
@@ -45,12 +45,12 @@ public class BookingControllerGw {
                                                      @RequestParam(name = "state", defaultValue = "ALL") String stateParam,
                                                      @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                      @Positive @RequestParam(name = "size", defaultValue = "10") Integer size)
-            throws ParamNotFoundException {
+            throws ParamNotFoundExceptionGw {
         ReqStatusGw state;
         try {
             state = ReqStatusGw.valueOf(stateParam.toUpperCase());
         } catch (Exception i) {
-            throw new ParamNotFoundException("Unknown state: " + stateParam);
+            throw new ParamNotFoundExceptionGw("Unknown state: " + stateParam);
         }
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
         return bookingClient.getAllBookingOwner(userId, state, from, size);
