@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserInDto;
+import ru.practicum.shareit.user.dto.UserInDtoGw;
 
 import javax.validation.Valid;
 
@@ -15,19 +15,19 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-public class UserController {
+public class UserControllerGw {
     private final UserClient userClient;
 
     @PostMapping
-    public ResponseEntity<Object> create(@Valid @RequestBody UserInDto userInDto) {
-        log.info("New user {}", userInDto);
-        return userClient.create(userInDto);
+    public ResponseEntity<Object> create(@Valid @RequestBody UserInDtoGw userInDtoGw) {
+        log.info("New user {}", userInDtoGw);
+        return userClient.create(userInDtoGw);
     }
 
     @PatchMapping("{userId}")
-    public ResponseEntity<Object> update(@PathVariable long userId, @Valid @RequestBody UserInDto userInDto) {
-        log.info("Update user {}, userId={}", userInDto, userId);
-        return userClient.update(userId, userInDto);
+    public ResponseEntity<Object> update(@PathVariable long userId, @Valid @RequestBody UserInDtoGw userInDtoGw) {
+        log.info("Update user {}, userId={}", userInDtoGw, userId);
+        return userClient.update(userId, userInDtoGw);
     }
 
     @GetMapping

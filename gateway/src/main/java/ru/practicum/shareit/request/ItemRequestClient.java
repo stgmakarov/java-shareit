@@ -8,7 +8,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.request.dto.ItemRequestInDto;
+import ru.practicum.shareit.request.dto.ItemRequestInDtoGw;
 
 import java.util.Map;
 
@@ -27,8 +27,8 @@ public class ItemRequestClient extends BaseClient {
     }
 
 
-    public ResponseEntity<Object> createItemRequest(ItemRequestInDto itemRequestInDto, long userId) {
-        return post("", userId, itemRequestInDto);
+    public ResponseEntity<Object> createItemRequest(ItemRequestInDtoGw itemRequestInDtoGw, long userId) {
+        return post("", userId, itemRequestInDtoGw);
     }
 
     public ResponseEntity<Object> getByUser(long userId) {

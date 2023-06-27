@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemRequestInDto {
+public class ItemRequestInDtoGw {
     private String description;
 
     public String getDescription() {

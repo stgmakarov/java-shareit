@@ -9,7 +9,7 @@ import javax.validation.constraints.Email;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInDto {
+public class UserInDtoGw {
     /*
         id — уникальный идентификатор пользователя;
         name — имя или логин пользователя;

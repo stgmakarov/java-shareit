@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemInDto {
+public class ItemInDtoGw {
     private String name;
     private String description;
     private Boolean available;

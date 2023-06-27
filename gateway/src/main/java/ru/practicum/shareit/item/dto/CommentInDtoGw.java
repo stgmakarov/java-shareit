@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class CommentInDto {
+public class CommentInDtoGw {
     private String text;
 
     @JsonCreator
-    public CommentInDto(@JsonProperty("text") String text) {
+    public CommentInDtoGw(@JsonProperty("text") String text) {
         this.text = text;
     }
 }

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingInDto {
+public class BookingInDtoGw {
     private long itemId;
     @FutureOrPresent
     private LocalDateTime start;

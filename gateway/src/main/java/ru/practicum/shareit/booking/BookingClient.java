@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.shareit.booking.dto.BookingInDto;
-import ru.practicum.shareit.booking.dto.ReqStatus;
+import ru.practicum.shareit.booking.dto.BookingInDtoGw;
+import ru.practicum.shareit.booking.dto.ReqStatusGw;
 import ru.practicum.shareit.client.BaseClient;
 
 import java.util.Map;
@@ -27,7 +27,7 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getAllBooking(long userId, ReqStatus state, Integer from, Integer size) {
+    public ResponseEntity<Object> getAllBooking(long userId, ReqStatusGw state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
                 "from", from,
@@ -36,7 +36,7 @@ public class BookingClient extends BaseClient {
         return get("", userId, parameters);
     }
 
-    public ResponseEntity<Object> getAllBookingOwner(long userId, ReqStatus state, Integer from, Integer size) {
+    public ResponseEntity<Object> getAllBookingOwner(long userId, ReqStatusGw state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
                 "from", from,
@@ -45,7 +45,7 @@ public class BookingClient extends BaseClient {
         return get("/owner", userId, parameters);
     }
 
-    public ResponseEntity<Object> create(long userId, BookingInDto requestDto) {
+    public ResponseEntity<Object> create(long userId, BookingInDtoGw requestDto) {
         return post("", userId, requestDto);
     }
 

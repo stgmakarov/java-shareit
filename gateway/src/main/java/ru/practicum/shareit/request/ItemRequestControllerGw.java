@@ -6,21 +6,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.request.dto.ItemRequestInDto;
+import ru.practicum.shareit.request.dto.ItemRequestInDtoGw;
 
 @Controller
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-public class ItemRequestController {
+public class ItemRequestControllerGw {
     private final ItemRequestClient itemRequestClient;
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody ItemRequestInDto itemRequestInDto,
+    public ResponseEntity<Object> create(@RequestBody ItemRequestInDtoGw itemRequestInDtoGw,
                                          @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("New request {}, userId={}", itemRequestInDto, userId);
-        return itemRequestClient.createItemRequest(itemRequestInDto, userId);
+        log.info("New request {}, userId={}", itemRequestInDtoGw, userId);
+        return itemRequestClient.createItemRequest(itemRequestInDtoGw, userId);
     }
 
     @GetMapping

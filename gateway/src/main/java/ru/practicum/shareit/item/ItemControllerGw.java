@@ -6,27 +6,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.CommentInDto;
-import ru.practicum.shareit.item.dto.ItemInDto;
+import ru.practicum.shareit.item.dto.CommentInDtoGw;
+import ru.practicum.shareit.item.dto.ItemInDtoGw;
 
 @Controller
 @RequestMapping(path = "/items")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-public class ItemController {
+public class ItemControllerGw {
     private final ItemClient itemClient;
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody ItemInDto itemInDto, @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemClient.createItem(itemInDto, userId);
+    public ResponseEntity<Object> create(@RequestBody ItemInDtoGw itemInDtoGw, @RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemClient.createItem(itemInDtoGw, userId);
     }
 
     @PatchMapping("{itemId}")
     public ResponseEntity<Object> update(@PathVariable long itemId,
-                                         @RequestBody ItemInDto itemInDto,
+                                         @RequestBody ItemInDtoGw itemInDtoGw,
                                          @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemClient.updateItem(itemId, itemInDto, userId);
+        return itemClient.updateItem(itemId, itemInDtoGw, userId);
     }
 
     @GetMapping("{itemId}")
@@ -56,7 +56,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addComment(@PathVariable long itemId,
                                              @RequestHeader("X-Sharer-User-Id") long userId,
-                                             @RequestBody CommentInDto comment) {
+                                             @RequestBody CommentInDtoGw comment) {
         log.info("New comment {}, item={}, userId={}", comment, itemId, userId);
         return itemClient.addComment(itemId, userId, comment.getText());
     }

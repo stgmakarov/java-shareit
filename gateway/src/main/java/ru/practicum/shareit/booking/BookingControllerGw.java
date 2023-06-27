@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingInDto;
-import ru.practicum.shareit.booking.dto.ReqStatus;
+import ru.practicum.shareit.booking.dto.BookingInDtoGw;
+import ru.practicum.shareit.booking.dto.ReqStatusGw;
 import ru.practicum.shareit.utilites.ParamNotFoundException;
 
 import javax.validation.Valid;
@@ -19,7 +19,7 @@ import javax.validation.constraints.PositiveOrZero;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-public class BookingController {
+public class BookingControllerGw {
     private final BookingClient bookingClient;
 
     @GetMapping
@@ -29,9 +29,9 @@ public class BookingController {
                                                 @Positive @RequestParam(name = "size", defaultValue = "10") Integer size)
             throws ParamNotFoundException {
 
-        ReqStatus state;
+        ReqStatusGw state;
         try {
-            state = ReqStatus.valueOf(stateParam.toUpperCase());
+            state = ReqStatusGw.valueOf(stateParam.toUpperCase());
         } catch (Exception i) {
             throw new ParamNotFoundException("Unknown state: " + stateParam);
         }
@@ -46,9 +46,9 @@ public class BookingController {
                                                      @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                      @Positive @RequestParam(name = "size", defaultValue = "10") Integer size)
             throws ParamNotFoundException {
-        ReqStatus state;
+        ReqStatusGw state;
         try {
-            state = ReqStatus.valueOf(stateParam.toUpperCase());
+            state = ReqStatusGw.valueOf(stateParam.toUpperCase());
         } catch (Exception i) {
             throw new ParamNotFoundException("Unknown state: " + stateParam);
         }
@@ -58,7 +58,7 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                                           @RequestBody @Valid BookingInDto requestDto) {
+                                           @RequestBody @Valid BookingInDtoGw requestDto) {
         log.info("Creating booking {}, userId={}", requestDto, userId);
         return bookingClient.create(userId, requestDto);
     }
