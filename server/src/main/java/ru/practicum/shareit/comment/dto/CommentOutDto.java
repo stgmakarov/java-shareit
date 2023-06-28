@@ -1,6 +1,5 @@
 package ru.practicum.shareit.comment.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
