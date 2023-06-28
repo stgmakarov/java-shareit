@@ -36,4 +36,3 @@ build/
 /logs/archived/
 /server/logs/*.log
 /server/logs/archived/*.log
-/checkstyle.xml
