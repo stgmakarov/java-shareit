@@ -4,7 +4,7 @@ version: '3.8'
 # имена и описания контейнеров, которые должны быть развёрнуты
 services:
   # описание контейнера db
-  db:
+  postgresql:
     # образ, из которого должен быть запущен контейнер
     image: postgres:16beta1-bullseye
     # volume и связанная с ним директория в контейнере
@@ -15,16 +15,19 @@ services:
       - POSTGRES_DB=shareit
       - POSTGRES_USER=test
       - POSTGRES_PASSWORD=test
+    ports:
+      - "6541:5432"
+
   server:
     build: server
     ports:
       - "9090:9090"
     # "зависит от",
     depends_on:
-      - db
+      - postgresql
     # переменные окружения
     environment:
-      - DB_HOST=db
+      - DB_HOST=postgresql
       - DB_PORT=5432
       - DB_NAME=shareit
       - DB_USER=test
@@ -36,3 +39,7 @@ services:
     # "зависит от",
     depends_on:
       - server
+      - postgresql
+    environment:
+      - SERV_HOST=server
+      - SERV_PORT=9090
