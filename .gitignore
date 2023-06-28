@@ -34,4 +34,5 @@ build/
 
 /logs/
 /logs/archived/
-/server/logs/spring-boot-logger.log
+/server/logs/*.log
+/server/logs/archived/*.log
