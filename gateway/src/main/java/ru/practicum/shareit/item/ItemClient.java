@@ -44,7 +44,7 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> findByText(String text) {
-        if(text.trim().isEmpty())
+        if (text.trim().isEmpty())
             return generateEmptyJsonResponse();
         Map<String, Object> parameters = Map.of("text", text);
         return get("/search", parameters);
