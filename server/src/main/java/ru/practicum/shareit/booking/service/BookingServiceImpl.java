@@ -82,8 +82,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAllBooking(long userId, String status, boolean byOwner, Long from, Long size)
-            {
+    public List<Booking> getAllBooking(long userId, String status, boolean byOwner, Long from, Long size) {
 /*        Получение списка всех бронирований текущего пользователя.
         Параметр state необязательный и по умолчанию равен ALL (англ. «все»).
         Также он может принимать значения CURRENT (англ. «текущие»),
