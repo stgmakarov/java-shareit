@@ -8,6 +8,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestInDtoGw;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+
 @Controller
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
@@ -39,8 +42,8 @@ public class ItemRequestControllerGw {
 
     @GetMapping("/all")
     public ResponseEntity<Object> getAllRequests(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                 @RequestParam(value = "from", required = false) Long from,
-                                                 @RequestParam(value = "size", required = false) Long size) {
+                                                 @PositiveOrZero @RequestParam(value = "from", required = false) Long from,
+                                                 @Positive @RequestParam(value = "size", required = false) Long size) {
         log.info("Get all requests, userId={}, from={}, siz{}", userId, from, size);
         return itemRequestClient.getAll(userId, from, size);
     }

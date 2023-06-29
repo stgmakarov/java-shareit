@@ -11,7 +11,6 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 public class UserInDtoGw {
     /*
-        id — уникальный идентификатор пользователя;
         name — имя или логин пользователя;
         email — адрес электронной почты (учтите, что два пользователя не могут иметь одинаковый адрес электронной почты).
     */

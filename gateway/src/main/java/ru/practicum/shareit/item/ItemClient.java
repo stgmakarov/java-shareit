@@ -35,7 +35,7 @@ public class ItemClient extends BaseClient {
         return patch("/" + itemId, userId, itemInDtoGw);
     }
 
-    public ResponseEntity<Object> getByIdDto2(long itemId, long userId) {
+    public ResponseEntity<Object> getById(long itemId, long userId) {
         return get("/" + itemId, userId);
     }
 
@@ -44,6 +44,8 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> findByText(String text) {
+        if(text.trim().isEmpty())
+            return generateEmptyJsonResponse();
         Map<String, Object> parameters = Map.of("text", text);
         return get("/search", parameters);
     }

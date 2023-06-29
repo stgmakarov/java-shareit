@@ -123,6 +123,10 @@ public class BaseClient {
         return prepareGatewayResponse(shareitServerResponse);
     }
 
+    protected ResponseEntity<Object> generateEmptyJsonResponse() {
+        return new ResponseEntity<>("[]", HttpStatus.OK);
+    }
+
     private HttpHeaders defaultHeaders(Long userId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingInDto;
 import ru.practicum.shareit.booking.dto.BookingOutDto;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.utilites.ParamNotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -41,7 +40,7 @@ public class BookingController {
                                       @RequestParam(value = "state", defaultValue = "ALL") String status,
                                       @RequestParam(value = "from", required = false) Long from,
                                       @RequestParam(value = "size", required = false) Long size)
-            throws ParamNotFoundException {
+            {
 
         return bookingService.getAllBooking(userId, status, false, from, size).stream()
                 .map(BookingMapper::toBookingOutDto)
@@ -53,7 +52,7 @@ public class BookingController {
                                            @RequestParam(value = "state", defaultValue = "ALL") String status,
                                            @RequestParam(value = "from", required = false) Long from,
                                            @RequestParam(value = "size", required = false) Long size)
-            throws ParamNotFoundException {
+            {
         return bookingService.getAllBooking(userId, status, true, from, size).stream()
                 .map(BookingMapper::toBookingOutDto)
                 .collect(Collectors.toList());

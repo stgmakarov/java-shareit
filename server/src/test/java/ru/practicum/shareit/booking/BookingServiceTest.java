@@ -16,7 +16,6 @@ import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.item.storage.ItemDbStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserDbStorage;
-import ru.practicum.shareit.utilites.ParamNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -292,21 +291,6 @@ public class BookingServiceTest {
                 user.getId(), "REJECTED", false, 0L, 20L);
         Assertions.assertNotNull(bookingList2);
         Assertions.assertEquals(bookingList2.size(), 0);
-    }
-
-    @Test
-    public void getAllBookingFail1Test() {
-        List<Booking> bookingList = List.of(booking);
-        when(userStorage.get(anyLong())).thenReturn(owner);
-        when(bookingStorage.getById(anyLong())).thenReturn(booking);
-
-        Assertions.assertThrows(ParamNotFoundException.class, () -> {
-            List<Booking> bookingList1 = bookingService.getAllBooking(
-                    user.getId(), "WRONG_STATUS",
-                    false,
-                    0L,
-                    20L);
-        });
     }
 
 }

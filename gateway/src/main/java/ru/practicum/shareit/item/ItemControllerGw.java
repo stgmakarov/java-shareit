@@ -18,21 +18,21 @@ public class ItemControllerGw {
     private final ItemClient itemClient;
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody ItemInDtoGw itemInDtoGw, @RequestHeader("X-Sharer-User-Id") long userId) {
+    public ResponseEntity<Object> createItem(@RequestBody ItemInDtoGw itemInDtoGw, @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemClient.createItem(itemInDtoGw, userId);
     }
 
     @PatchMapping("{itemId}")
-    public ResponseEntity<Object> update(@PathVariable long itemId,
-                                         @RequestBody ItemInDtoGw itemInDtoGw,
-                                         @RequestHeader("X-Sharer-User-Id") long userId) {
+    public ResponseEntity<Object> updateItem(@PathVariable long itemId,
+                                             @RequestBody ItemInDtoGw itemInDtoGw,
+                                             @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemClient.updateItem(itemId, itemInDtoGw, userId);
     }
 
     @GetMapping("{itemId}")
     public ResponseEntity<Object> getItemById(@PathVariable long itemId,
                                               @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemClient.getByIdDto2(itemId, userId);
+        return itemClient.getById(itemId, userId);
     }
 
     @GetMapping

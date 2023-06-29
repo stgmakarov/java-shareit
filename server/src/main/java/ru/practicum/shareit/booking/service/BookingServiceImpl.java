@@ -12,13 +12,13 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.storage.UserStorage;
-import ru.practicum.shareit.utilites.ParamNotFoundException;
 import ru.practicum.shareit.utilites.ShareitHelper;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.utilites.ShareitHelper.returnErrorMsg;
@@ -83,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getAllBooking(long userId, String status, boolean byOwner, Long from, Long size)
-            throws ParamNotFoundException {
+            {
 /*        Получение списка всех бронирований текущего пользователя.
         Параметр state необязательный и по умолчанию равен ALL (англ. «все»).
         Также он может принимать значения CURRENT (англ. «текущие»),
@@ -96,14 +96,14 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> ret = null;
         Pageable pageable = ShareitHelper.getPage(size, from);
 
-        ReqStatus reqStatus;
+        ReqStatus reqStatus = null;
         try {
             reqStatus = ReqStatus.valueOf(status.toUpperCase());
         } catch (Exception e) {
-            throw new ParamNotFoundException("Unknown state: " + status);
+            returnErrorMsg(HttpStatus.BAD_REQUEST, "Unknown state: " + status);
         }
         checkUser(userId);
-        switch (reqStatus) {
+        switch (Objects.requireNonNull(reqStatus)) {
             case ALL:
                 ret = bookingDbStorage.getByBookerId(userId, byOwner, pageable);
                 break;
